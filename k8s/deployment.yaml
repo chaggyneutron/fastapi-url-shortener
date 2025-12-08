@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urlshort-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: urlshort-api
+  template:
+    metadata:
+      labels:
+        app: urlshort-api
+    spec:
+      containers:
+        - name: urlshort-api
+          image: ghcr.io/chaggyneutron/fastapi-url-shortener:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 4
+            periodSeconds: 8
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 2
+            periodSeconds: 5
+
